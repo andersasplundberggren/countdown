@@ -1,8 +1,8 @@
 /* Enkel nedräkning — ändra här */
-const TITLE = "Nedräkning till lansering";
+const TITLE = "Varmt välkommen om";
 // Sommartid (mar–okt): +02:00  •  Vintertid (okt–mar): +01:00
-const TARGET = new Date("2025-12-31T23:59:59+01:00");
-const TARGET_TEXT = "Mål: 31 december 2025 kl 23:59 (Stockholm)";
+const TARGET = new Date("2025-08-18T08:00:00+01:00");
+const TARGET_TEXT = "Knickedicken med kicken till KLK🥳";
 
 /* ———— Ingen ändring behövs nedan ———— */
 
