@@ -1,0 +1,144 @@
+/* Flip-Clock Nedräkning — minimalistisk design */
+:root{
+  --bg: #0b1220;
+  --fg: #e6ebf5;
+  --muted: #90a0bf;
+  --accent: #5b8cff;
+  --card: #0f172a;
+  --shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--fg);
+  background: radial-gradient(1200px 800px at 50% -10%, #1b2540 0%, var(--bg) 60%, #080b14 100%);
+  display: grid;
+  place-items: center;
+}
+
+.wrap{
+  width: min(1100px, 94vw);
+  text-align: center;
+  padding: 28px;
+}
+
+h1{
+  margin: 0 0 24px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--fg);
+}
+
+.target{
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.countdown{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: min(22px, 3vw);
+  align-items: end;
+  justify-items: center;
+}
+
+.unit{ width: 100%; }
+
+.label{
+  font-size: 13px;
+  letter-spacing: .2em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.digits{
+  display: flex;
+  gap: min(10px, 1.2vw);
+  justify-content: center;
+}
+
+/* ————— Flip Digit ————— */
+.digit{
+  perspective: 1000px;
+  filter: drop-shadow(var(--shadow));
+}
+
+.card{
+  position: relative;
+  width: clamp(64px, 12vw, 120px);
+  height: clamp(84px, 16vw, 160px);
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(#0e1528, #0b1220);
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.top, .bottom, .flip-top, .flip-bottom{
+  position: absolute;
+  left: 0; right: 0;
+  display: grid;
+  place-items: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: clamp(40px, 8vw, 90px);
+  line-height: 1;
+  color: #eaf1ff;
+}
+
+.top{
+  top: 0;
+  height: 50%;
+  background: linear-gradient(180deg, #101a33 0%, #0c1224 100%);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.bottom{
+  bottom: 0;
+  height: 50%;
+  background: #0a0f1d;
+}
+
+.flip{ position: absolute; inset: 0; pointer-events: none; }
+
+.flip-top, .flip-bottom{
+  height: 50%;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.flip-top{
+  top: 0;
+  background: linear-gradient(180deg, #101a33 0%, #0c1224 100%);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  transform-origin: center bottom;
+  transform: rotateX(0deg);
+}
+
+.flip-bottom{
+  bottom: 0;
+  background: #0a0f1d;
+  transform-origin: center top;
+  transform: rotateX(90deg);
+}
+
+/* Animationer */
+.play .flip-top{ animation: flipTop .35s ease-in forwards; }
+.play .flip-bottom{ animation: flipBottom .45s .25s ease-out forwards; }
+
+@keyframes flipTop{
+  0%   { transform: rotateX(0deg); }
+  100% { transform: rotateX(-90deg); }
+}
+@keyframes flipBottom{
+  0%   { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+
+/* Respons */
+@media (max-width: 640px){
+  .label{ font-size: 12px; }
+}
