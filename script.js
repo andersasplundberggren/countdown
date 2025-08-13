@@ -1,11 +1,11 @@
 /* Flip-Clock Nedräkning
    — Redigera inställningarna här nere —
 */
-const TITLE = "Nedräkning för Knickedicken med kickens entré";
+const TITLE = "Varmt välkommen om";
 // Ange mål i ISO 8601 med explicit svensk offset.
 // Sommartid (mar–okt): +02:00  •  Vintertid (okt–mar): +01:00
 const TARGET = new Date("2025-08-18T08:00:00+01:00");
-const TARGET_TEXT = "Mål: 18 sugusti 2025 kl 08:00 (Stockholm)";
+const TARGET_TEXT = "Knickedicken med kicken till KLK";
 
 /* ———— Ingen ändring behövs nedan ———— */
 
