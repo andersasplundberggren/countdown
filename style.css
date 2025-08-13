@@ -77,6 +77,7 @@ h1{
   border: 1px solid rgba(255,255,255,.06);
 }
 
+/* Baslager: top överst, bottom under */
 .top, .bottom, .flip-top, .flip-bottom{
   position: absolute;
   left: 0; right: 0;
@@ -94,16 +95,19 @@ h1{
   height: 50%;
   background: linear-gradient(180deg, #101a33 0%, #0c1224 100%);
   border-bottom: 1px solid rgba(255,255,255,.06);
+  z-index: 1;
 }
 
 .bottom{
   bottom: 0;
   height: 50%;
   background: #0a0f1d;
+  z-index: 0;
 }
 
-.flip{ position: absolute; inset: 0; pointer-events: none; }
+.flip{ position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 
+/* Dölj baksidorna och sätt rätt lager under animation */
 .flip-top, .flip-bottom{
   height: 50%;
   backface-visibility: hidden;
@@ -116,6 +120,7 @@ h1{
   border-bottom: 1px solid rgba(255,255,255,.06);
   transform-origin: center bottom;
   transform: rotateX(0deg);
+  z-index: 3; /* överst när den fälls ned */
 }
 
 .flip-bottom{
@@ -123,6 +128,7 @@ h1{
   background: #0a0f1d;
   transform-origin: center top;
   transform: rotateX(90deg);
+  z-index: 1; /* under flip-top, över bottom */
 }
 
 /* Animationer */
