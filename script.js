@@ -34,6 +34,47 @@ function makeDigit(initial = "0"){
       </div>
     </div>
   `;
+
+  // Lägg till event-lyssnare för tajtare kontroll
+  const flip = d.querySelector(".flip");
+  const flipTop = d.querySelector(".flip-top");
+  const flipBottom = d.querySelector(".flip-bottom");
+  const top = d.querySelector(".top");
+  const bottom = d.querySelector(".bottom");
+
+  // När övre halvan flippat klart: uppdatera top till nya siffran (men den är nedfälld)
+  flipTop.addEventListener("animationend", (e) => {
+    if (e.animationName !== "flipTop") return;
+    top.textContent = flipBottom.textContent; // top blir nu nya siffran (syns först när flip-bottom fälls upp klart)
+  });
+
+  // När nedre halvan flippat klart: lås allt till nya siffran och avsluta
+  flipBottom.addEventListener("animationend", (e) => {
+    if (e.animationName !== "flipBottom") return;
+    const newVal = flipBottom.textContent;
+    top.textContent = newVal;
+    bottom.textContent = newVal;
+    d.dataset.number = newVal;
+    flip.classList.remove("play"); // avsluta spelad klass
+  });
+
+  d._setNumbers = (current, next) => {
+    // Statiska ytor: initialt visar båda CURRENT tills halvtid
+    top.textContent = current;
+    bottom.textContent = current;
+
+    // Flip-plattor: övre visar CURRENT (fälls ned), nedre visar NEXT (fälls upp)
+    flipTop.textContent = current;
+    flipBottom.textContent = next;
+  };
+
+  d._play = () => {
+    const flip = d.querySelector(".flip");
+    flip.classList.remove("play");
+    void flip.offsetWidth; // reflow för att kunna starta om
+    flip.classList.add("play");
+  };
+
   return d;
 }
 
@@ -60,37 +101,18 @@ function getRemaining(target){
 
 function flipTo(digitEl, newNumber){
   const cur = digitEl.dataset.number;
-  if(cur === String(newNumber)) return;
+  const next = String(newNumber);
+  if(cur === next) return;
 
-  const top = digitEl.querySelector(".top");
-  const bottom = digitEl.querySelector(".bottom");
-  const flip = digitEl.querySelector(".flip");
-  const ft = digitEl.querySelector(".flip-top");
-  const fb = digitEl.querySelector(".flip-bottom");
-
-  // Sätt text innehåll för korrekt lager under animationen
-  ft.textContent = cur;           // övre flip visar gamla siffran som fälls ned
-  fb.textContent = newNumber;     // nedre flip visar nya siffran som fälls upp
-  top.textContent = cur;          // statiska top visar gamla tills flip är klar
-  bottom.textContent = newNumber; // statiska bottom visar nya
-
-  // starta om animation
-  flip.classList.remove("play");
-  void flip.offsetWidth; // tvinga reflow
-  flip.classList.add("play");
-
-  // efter animation, lås den nya siffran
-  setTimeout(()=>{
-    top.textContent = newNumber;
-    bottom.textContent = newNumber;
-    digitEl.dataset.number = String(newNumber);
-  }, 600);
+  digitEl._setNumbers(cur, next);
+  digitEl._play();
 }
 
 function updateUnit(container, strValue){
   const digits = container.querySelectorAll(".digit");
   for(let i=0;i<digits.length;i++){
-    flipTo(digits[i], strValue[i] ?? "0");
+    const nextDigit = strValue[i] ?? "0";
+    flipTo(digits[i], nextDigit);
   }
 }
 
@@ -101,6 +123,34 @@ mountDigits(containers.days, dayDigits);
 mountDigits(containers.hours, 2);
 mountDigits(containers.minutes, 2);
 mountDigits(containers.seconds, 2);
+
+// Sätt initialt visade värden utan att spela animation
+function setInitial(){
+  const r = getRemaining(TARGET);
+  const dStr = pad(r.days, containers.days.children.length);
+  const hStr = pad(r.hours);
+  const mStr = pad(r.minutes);
+  const sStr = pad(r.seconds);
+
+  const units = [
+    [containers.days, dStr],
+    [containers.hours, hStr],
+    [containers.minutes, mStr],
+    [containers.seconds, sStr],
+  ];
+
+  for(const [container, value] of units){
+    const digits = container.querySelectorAll(".digit");
+    for(let i=0;i<digits.length;i++){
+      const el = digits[i];
+      el.dataset.number = value[i];
+      el.querySelector(".top").textContent = value[i];
+      el.querySelector(".bottom").textContent = value[i];
+      el.querySelector(".flip-top").textContent = value[i];
+      el.querySelector(".flip-bottom").textContent = value[i];
+    }
+  }
+}
 
 function render(){
   const r = getRemaining(TARGET);
@@ -116,5 +166,6 @@ function render(){
 }
 
 // Kickoff
+setInitial();
 render();
 setInterval(render, 1000);
