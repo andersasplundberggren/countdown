@@ -7,7 +7,7 @@ const TITLE = "Nedräkning för Knickedicken med kickens entré";
 const TARGET = new Date("2025-08-18T08:00:00+01:00");
 const TARGET_TEXT = "Mål: 18 sugusti 2025 kl 08:00 (Stockholm)";
 
-// ———— Inget mer att röra nedan ————
+/* ———— Ingen ändring behövs nedan ———— */
 
 document.getElementById("title").textContent = TITLE;
 document.getElementById("targetText").textContent = TARGET_TEXT;
@@ -68,17 +68,18 @@ function flipTo(digitEl, newNumber){
   const ft = digitEl.querySelector(".flip-top");
   const fb = digitEl.querySelector(".flip-bottom");
 
-  ft.textContent = cur;
-  fb.textContent = newNumber;
-  top.textContent = cur;
-  bottom.textContent = newNumber;
+  // Sätt text innehåll för korrekt lager under animationen
+  ft.textContent = cur;           // övre flip visar gamla siffran som fälls ned
+  fb.textContent = newNumber;     // nedre flip visar nya siffran som fälls upp
+  top.textContent = cur;          // statiska top visar gamla tills flip är klar
+  bottom.textContent = newNumber; // statiska bottom visar nya
 
   // starta om animation
   flip.classList.remove("play");
-  void flip.offsetWidth; // reflow
+  void flip.offsetWidth; // tvinga reflow
   flip.classList.add("play");
 
-  // efter animation, sätt nya numret
+  // efter animation, lås den nya siffran
   setTimeout(()=>{
     top.textContent = newNumber;
     bottom.textContent = newNumber;
@@ -93,9 +94,9 @@ function updateUnit(container, strValue){
   }
 }
 
-// Init: antal siffror (dagar kan bli 2–4)
+// Initiera antal siffror (dagar kan vara 2–4+)
 const initial = getRemaining(TARGET);
-const dayDigits = Math.max(2, String(initial.days).length); // minst 2
+const dayDigits = Math.max(2, String(initial.days).length);
 mountDigits(containers.days, dayDigits);
 mountDigits(containers.hours, 2);
 mountDigits(containers.minutes, 2);
